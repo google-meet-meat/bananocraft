@@ -1,14 +1,18 @@
 package banano.bananominecraft.bananoeconomy;
 
 import banano.bananominecraft.bananoeconomy.exceptions.TransactionError;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import org.bukkit.plugin.Plugin;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
@@ -52,8 +56,8 @@ public class RPC{
         }
         return response.toString();
     }
-
-    public static String accountCreate(int index){
+    
+    public static String accountCreate(int index) {
 
 
         String payload = "{\"action\": \"account_create\"," +
@@ -74,10 +78,12 @@ public class RPC{
             return account;
         }
         catch (Exception e){
-            System.out.println(payload);
-            e.printStackTrace();
+            Main.log.info(payload);
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            Main.log.info(sw.toString());
         }
-        return "Account Creation Failed";
+        return "Account creation failed";
     }
 
     private static BigInteger toRaw(double value){
@@ -110,7 +116,7 @@ public class RPC{
             final String sendResponse = sendPost(payload);
             accountJson = new JsonParser().parse(sendResponse);
         } catch (final Exception e) {
-            plugin.getLogger().info(() -> String.format("Failed to sendTransaction with payload: '%s' because: '%s'", payload, e.getLocalizedMessage()));
+            plugin.getLogger().info(() -> String.format("Failed to send transaction with payload: '%s' because: '%s'", payload, e.getLocalizedMessage()));
             throw new TransactionError("Send transaction failed");
         }
 
@@ -170,8 +176,7 @@ public class RPC{
         return Arrays.asList("Null", "Null");
     }
 
-    public static Boolean wallet_exists(){
-        String walletID = getWalletID();
+    public static Boolean wallet_exists(String walletID){
 
         String payload = "{\"action\": \"wallet_balances\"," +
                 "\"wallet\": \"" + walletID + "\"}";
@@ -243,7 +248,7 @@ public class RPC{
         }
     }
 
-    private static String getWalletID(){
+    public static String getWalletID(){
 
         return plugin.getConfig().getString("walletID");
     }
@@ -252,4 +257,13 @@ public class RPC{
 
         return plugin.getConfig().getString("masterWallet");
     }
+    
+    public static String getGameWallet() {
+    	return plugin.getConfig().getString("game1Wallet");
+    }
+    
+    public static int getMinBal() {
+        return plugin.getConfig().getInt("minbal");
+    }
+    
 }

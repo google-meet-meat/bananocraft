@@ -58,8 +58,8 @@ public class EconomyFuncs {
     }
 
     public static boolean addBalanceTP(Player player, double amount){
-        // MASTER WALLET TO PLAYER
-        String sender = RPC.getMasterWallet();
+        // GAME WALLET TO PLAYER
+        String sender = RPC.getGameWallet();
         double serverBalance = RPC.getBalance(sender);
 
         if (serverBalance - amount < 0 || DB.isFrozen(player)) return false;

@@ -5,6 +5,7 @@ api-version: 1.16
 authors: [Kirby]
 description: Hello World
 depend: [Vault]
+softdepend: [MBedwars]
 commands:
 
   nodeinfo:
@@ -19,14 +20,22 @@ commands:
     description: Send a tip to another player
 
   withdraw:
-    description: Withdraw bans to an address
+    description: Withdraw BAN to an address
 
   balance:
     description: Displays your balance
     aliases: [bal]
+  
+  donate:
+    description: Donate to the game wallet
+    
+  3ne9pcgmg3iuy:
+    description: Reward player
+    permission: BananoEconomy.rewardplayer
+    permission-message: You do not have /<permission>
 
   freeze:
-    aliases: [f]
+    aliases: [frz]
     description: freeze player's account
     permission: BananoEconomy.freezer
     permission-message: You do not have /<permission>
@@ -51,5 +60,7 @@ permissions:
   BananoEconomy.freezer:
       description: freeze boys
       default: op
-
+  BananoEconomy.rewardplayer:
+      description: reward player
+      default: op
 

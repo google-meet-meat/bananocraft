@@ -31,17 +31,17 @@ public class VaultConnector implements Economy {
 
     @Override
     public String format(double amount) {
-        return String.valueOf(amount) + "Bans";
+        return String.valueOf(amount) + "BAN";
     }
 
     @Override
     public String currencyNamePlural() {
-        return "Bans";
+        return "BAN";
     }
 
     @Override
     public String currencyNameSingular() {
-        return "Ban";
+        return "BAN";
     }
 
     @Override

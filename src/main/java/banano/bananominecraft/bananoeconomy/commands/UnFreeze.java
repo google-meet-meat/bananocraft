@@ -19,13 +19,13 @@ public class UnFreeze implements CommandExecutor {
             if (p == null){
                 boolean ret = DB.unfreezePlayer(player);
                 if (!ret) {
-                    commandSender.sendMessage(String.format("%s no existy.", player));
+                    commandSender.sendMessage(String.format("%s does not exist.", player));
                     return false;
                 }
             }else{
                 unfreezePlayer(p);
             }
-            commandSender.sendMessage(String.format("%s's account has been unfrozen!", player));
+            commandSender.sendMessage(String.format("%s's account has been unfrozen", player));
         }
         return true;
     }

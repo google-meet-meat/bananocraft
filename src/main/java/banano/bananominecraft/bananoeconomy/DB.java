@@ -31,15 +31,20 @@ public class DB {
     }
 
     /**
-     * @returns: null if player doesn not exist.
+     * @returns: null if player does not exist.
      */
     public static String getWallet(Player player){
-
         if (accountExists(player))
             return getUserDBEntry(player).getString("wallet");
 
         return null;
         
+    }
+    
+    public static String getWallet(String playerName) {
+    	if (accountExists(playerName))
+    		return getUserDBEntry(playerName).first().getString("wallet");
+		return null;
     }
 
     public static void storeAccount(Player player, String banAccount){
@@ -53,7 +58,13 @@ public class DB {
         usersCollection.insertOne(document1);
 
     }
-
+    
+    public static boolean isFrozen(String playerName) {
+    	if (accountExists(playerName))
+    		return getUserDBEntry(playerName).first().getBoolean("frozen");
+		return false;
+    }
+    
     public static boolean isFrozen(Player player){
         if (accountExists(player))
             return getUserDBEntry(player).getBoolean("frozen");
@@ -114,6 +125,14 @@ public class DB {
         }
         return true;
     }
+    
+    public static boolean accountExists(String playerName) {
+    	Document user = getUserDBEntry(playerName).first();
+    	if (user == null) {
+    		return false;
+    	}
+    	return true;
+    }
 
     public static boolean updateUserEntry(Player player, Document update){
         String playerUUID = player.getUniqueId().toString();
@@ -123,7 +142,7 @@ public class DB {
     }
 
     /**
-     * @returns: null if player doesn not exist.
+     * @returns: null if player does not exist.
      */
     public static Document getUserDBEntry(Player player){
 
@@ -133,6 +152,8 @@ public class DB {
 
         return user;
     }
+    
+    
     public static FindIterable<Document> getUserDBEntry(String name){
         Document query = new Document("name",name);
         FindIterable<Document> user = usersCollection.find(query);

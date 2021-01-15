@@ -19,13 +19,13 @@ public class Freeze implements CommandExecutor {
             if (p == null){
                 boolean ret = DB.freezePlayer(player);
                 if (!ret) {
-                    commandSender.sendMessage(String.format("%s no existy.", player));
+                    commandSender.sendMessage(String.format("%s does not exist.", player));
                     return false;
                 }
             }else{
                 freezePlayer(p);
             }
-            commandSender.sendMessage(String.format("%s's account has been frozen!", player));
+            commandSender.sendMessage(String.format("%s's account has been frozen", player));
         }
         return true;
     }

@@ -26,7 +26,7 @@ public class Balance implements CommandExecutor {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                 final Double balance = EconomyFuncs.getBalance(player);
                 final DecimalFormat df = new DecimalFormat("#.##");
-                player.sendMessage(ChatColor.YELLOW + "Your current balance is: " + df.format(balance));
+                player.sendMessage(ChatColor.YELLOW + "Your current balance is: " + df.format(balance) + " BAN");
             });
         } else {
             System.out.println("You need to be a player");

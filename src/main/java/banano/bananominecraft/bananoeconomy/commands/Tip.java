@@ -33,8 +33,8 @@ public class Tip implements CommandExecutor {
         if (args.length != 2) {
             player.sendMessage("You need to enter an amount to send and a player to send to");
             player.sendMessage("/tip [amount] [playername]");
+            return true;
         }
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> System.out.println(""));
 
         // Implementation Note:
         // Because this parses to `double` instead of say an infinite precision `BigDouble` we can
@@ -53,29 +53,27 @@ public class Tip implements CommandExecutor {
         }
 
         final String targetPlayerName = args[1];
-        final Player target = Bukkit.getPlayerExact(targetPlayerName);
+        Player target = Bukkit.getPlayerExact(targetPlayerName);
         if (target == player) {
             player.sendMessage("You cannot tip yourself");
             return false;
-        } else if (!(target instanceof Player)) {
-            player.sendMessage("Player needs to be online for you to tip them");
-            return false;
         }
-
+        target = null;
+        
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             if (DB.isFrozen(player)) {
-                player.sendMessage("u r frozen!!!!!!!!!");
+                player.sendMessage("Your account is frozen");
                 return;
             }
 
-            if (DB.isFrozen(target)) {
-                player.sendMessage(targetPlayerName + "is frozen!!!!!!!!!");
+            if (DB.isFrozen(targetPlayerName)) {
+                player.sendMessage(targetPlayerName + "'s account is frozen");
                 return;
             }
 
-            player.sendMessage("Tipping " + target.getDisplayName() + " with " + amount + " bans.");
+            player.sendMessage("Tipping " + targetPlayerName + " with " + amount + " BAN.");
             final String sWallet = DB.getWallet(player);
-            final String tWallet = DB.getWallet(target);
+            final String tWallet = DB.getWallet(targetPlayerName);
             final String blockHash;
             try {
                 blockHash = RPC.sendTransaction(sWallet, tWallet, amount);
@@ -87,16 +85,15 @@ public class Tip implements CommandExecutor {
             final String blockURL = "https://creeper.banano.cc/explorer/block/" + blockHash;
             final TextComponent blocklink = new TextComponent("Click me to view the transaction in the block explorer");
             blocklink.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, blockURL));
-            blocklink.setUnderlined(true);
 
             final String amountstr = Double.toString(amount);
-            player.spigot().sendMessage((new ComponentBuilder("You have sent ").color(ChatColor.YELLOW).append(amountstr).color(ChatColor.WHITE).bold(true).append(" to ").color(ChatColor.YELLOW)
-                    .append(target.getDisplayName()).color(ChatColor.WHITE).bold(true).append(" with block ID : ").append(blockHash).color(ChatColor.YELLOW).bold(true).create()));
+            //player.spigot().sendMessage((new ComponentBuilder("You have sent ").color(ChatColor.YELLOW).append(amountstr).color(ChatColor.WHITE).bold(true).append(" to ").color(ChatColor.YELLOW)
+                    //.append(target.getDisplayName()).color(ChatColor.WHITE).bold(true).append(" with block ID : ").append(blockHash).color(ChatColor.YELLOW).bold(true).create()));
             player.spigot().sendMessage(blocklink);
 
-            target.spigot().sendMessage((new ComponentBuilder("You have received ").color(ChatColor.YELLOW).append(amountstr).color(ChatColor.WHITE).bold(true).append(" from ").color(ChatColor.YELLOW)
+            /*target.spigot().sendMessage((new ComponentBuilder("You have received ").color(ChatColor.YELLOW).append(amountstr).color(ChatColor.WHITE).bold(true).append(" from ").color(ChatColor.YELLOW)
                     .append(player.getDisplayName()).color(ChatColor.WHITE).bold(true).append(" with block ID : ").append(blockHash).color(ChatColor.YELLOW).bold(true).create()));
-            target.spigot().sendMessage(blocklink);
+            target.spigot().sendMessage(blocklink);*/
         });
 
         return false;
